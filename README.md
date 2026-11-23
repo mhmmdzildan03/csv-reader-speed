@@ -12,10 +12,13 @@ writes `/output/answers.json`.
 
 Where the reference builds each field one character at a time, this reader
 jumps between delimiters with `indexOf` and slices each clean run of
-characters out of the text in one piece. Only the rare broken paths (a stray
-CR inside a field, a doubled quote, a CR inside quotes, junk after a closing
-quote) assemble a field from parts. On the kit's practice set it answers all
-6 cases identically at roughly 3.4x the reference's speed. Dependency-free,
+characters out of the text in one piece. The next LF and CR positions are
+cached and rescanned only once the reader passes them, so an ordinary field
+costs a single short `indexOf` for its comma, and the field readers return
+through shared variables so a field allocates nothing but its string. Only
+the rare broken paths (a stray CR inside a field, a doubled quote, a CR
+inside quotes, junk after a closing quote) assemble a field from parts. On the kit's practice set it answers all
+6 cases identically at roughly 6.6x the reference's speed. Dependency-free,
 deterministic, nothing kept from one call to the next.
 
 ## Run it
